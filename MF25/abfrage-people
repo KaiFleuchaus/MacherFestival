@@ -1,0 +1,127 @@
+# KORRIGIERTES SKRIPT - Crew Leute vollständig
+$baseUrl = "https://macherfestival.festiwa.re"
+$clientId = 2
+$clientSecret = "NCe0Zmn1uM1ET1sZW0VmTR9LZyJWyDHWxRTX62oR"
+$username = "api4@festiware.eu"
+$password = "Ns2pqmFzxod7eZ2q"
+$groupTypeId = 24
+$projectId = 1
+$csvExportPath = ".\crew-leute-fixed-FINAL.csv"
+
+Write-Host "=== FESTIWARE CREW EXPORT (KORRIGIERT) ==="
+
+# Token holen
+Write-Host "Token wird angefragt..."
+$tokenResponse = Invoke-RestMethod -Uri "$baseUrl/oauth/token" -Method Post -Body @{
+    grant_type    = "password"
+    client_id     = $clientId
+    client_secret = $clientSecret
+    username      = $username
+    password      = $password
+    scope         = ""
+} -ContentType "application/x-www-form-urlencoded"
+
+$accessToken = $tokenResponse.access_token
+Write-Host "Token erfolgreich erhalten."
+
+# Alle echten Crew-Daten sammeln
+$allRealCrewData = @()
+
+Write-Host "=== SAMMLE ALLE CREW-MITGLIEDER ==="
+
+# Erste Seite laden um Gesamtanzahl der Seiten zu ermitteln
+Write-Host "Lade Seite 1 und ermittle Gesamtanzahl..."
+$uri = "$baseUrl/api/v1/people/$groupTypeId/$projectId"
+$response = Invoke-RestMethod -Uri $uri -Headers @{ 
+    Authorization = "Bearer $accessToken"
+    Accept = "application/json" 
+} -Method Get
+
+# Gesamtanzahl der Seiten aus der API-Antwort ermitteln
+$totalPages = $response.last_page
+$totalItems = $response.total
+Write-Host "Gefunden: $totalItems Personen auf $totalPages Seiten"
+
+# Erste Seite verarbeiten
+$pageData = $response.data | ForEach-Object { $_.data }
+$allRealCrewData += $pageData
+Write-Host "Seite 1: $($pageData.Count) Personen (gesamt: $($allRealCrewData.Count))"
+
+# Restliche Seiten laden (falls vorhanden)
+if ($totalPages -gt 1) {
+    for ($page = 2; $page -le $totalPages; $page++) {
+        Write-Host "Lade Seite $page..."
+        
+        # URL wie im manuellen Code - WICHTIG: page Parameter korrekt setzen
+        $uri = "$baseUrl/api/v1/people/$groupTypeId/$projectId" + "?page=$page"
+        
+        $success = $false
+        $maxRetries = 3
+        
+        for ($retry = 1; $retry -le $maxRetries; $retry++) {
+            try {
+                if ($retry -gt 1) {
+                    Write-Host "  Versuch $retry von $maxRetries..." -ForegroundColor Yellow
+                    Start-Sleep -Seconds ($retry * 2)  # Pause zwischen Versuchen
+                }
+                
+                Write-Host "  DEBUG: baseUrl=$baseUrl" -ForegroundColor Cyan
+                Write-Host "  DEBUG: groupTypeId=$groupTypeId" -ForegroundColor Cyan  
+                Write-Host "  DEBUG: projectId=$projectId" -ForegroundColor Cyan
+                Write-Host "  DEBUG: page=$page" -ForegroundColor Cyan
+                Write-Host "  DEBUG: Lade URL: $uri" -ForegroundColor Cyan
+                
+                # API-Aufruf mit Fehlerbehandlung
+                $response = Invoke-RestMethod -Uri $uri -Headers @{ 
+                    Authorization = "Bearer $accessToken"
+                    Accept = "application/json" 
+                } -Method Get
+                
+                # Daten extrahieren
+                $pageData = $response.data | ForEach-Object { $_.data }
+                $allRealCrewData += $pageData
+                Write-Host "Seite $page`: $($pageData.Count) Personen (gesamt: $($allRealCrewData.Count))"
+                $success = $true
+                break
+            }
+            catch {
+                Write-Host "  FEHLER bei Versuch $retry`: $($_.Exception.Message)" -ForegroundColor Red
+                if ($retry -eq $maxRetries) {
+                    Write-Host "  Alle $maxRetries Versuche fehlgeschlagen. Überspringe Seite $page." -ForegroundColor Red
+                }
+            }
+        }
+    }
+}
+
+# CSV Export
+Write-Host "`n=== CSV EXPORT ==="
+Write-Host "Exportiere $($allRealCrewData.Count) Crew-Mitglieder nach: $csvExportPath"
+$allRealCrewData | Export-Csv -Path $csvExportPath -NoTypeInformation -Encoding UTF8
+
+if (Test-Path $csvExportPath) {
+    $fileSize = (Get-Item $csvExportPath).Length
+    Write-Host "ERFOLG: CSV erstellt - $csvExportPath ($fileSize Bytes)"
+    
+    Write-Host "`nVorschau (erste 5 Personen):"
+    $allRealCrewData | Select-Object -First 5 | ForEach-Object {
+        Write-Host "- $($_.firstname) $($_.name) ($($_.email))"
+    }
+    
+    Write-Host "`nLetzten 3 Personen:"
+    $allRealCrewData | Select-Object -Last 3 | ForEach-Object {
+        Write-Host "- $($_.firstname) $($_.name) ($($_.email))"
+    }
+    
+    # Warnung wenn nicht alle Daten exportiert wurden
+    if ($allRealCrewData.Count -lt $totalItems) {
+        Write-Host "`n⚠️  WARNUNG: Nur $($allRealCrewData.Count) von $totalItems Personen exportiert!" -ForegroundColor Yellow
+        Write-Host "   Fehlende Personen: $($totalItems - $allRealCrewData.Count)" -ForegroundColor Yellow
+        Write-Host "   Möglicherweise sind einige API-Seiten nicht erreichbar." -ForegroundColor Yellow
+    }
+    
+    Write-Host "`n🎯 FERTIG! Alle $($allRealCrewData.Count) Crew-Mitglieder in CSV exportiert!"
+    
+} else {
+    Write-Host "FEHLER: CSV nicht erstellt!"
+}

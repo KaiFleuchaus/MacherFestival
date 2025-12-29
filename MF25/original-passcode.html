@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        @font-face {
+            font-family: 'Ubuntu Medium';
+            src: url('{{storage_path("fonts/Ubuntu-M.ttf")}}') format('truetype')
+        }
+
+        @font-face {
+            font-family: 'Source Code Pro Black' ;
+            src: url('{{storage_path("fonts/SourceCodePro-Black.ttf")}}') format('truetype')
+        }
+
+        @font-face {
+            font-family: 'Ubuntu Light' ;
+            src: url('{{storage_path("fonts/Ubuntu-L.ttf")}}') format('truetype')
+        }
+
+        @page {
+            margin: 0px;
+        }
+
+        body {
+            margin: 0px;
+        }
+
+        .imageContainer {
+            position: absolute;
+            left: 67mm;
+            top: 9mm;
+            height: 1.25cm;
+            width: 1.25cm;
+        }
+	  
+        .imageContainer img.qrcode {
+	        margin: 0cm;
+            width: 1.25cm;
+            height: 1.25cm;
+        }	  
+	  
+        .nameContainer {
+            position: absolute;
+            left: 9mm;
+	  		right: 9mm;
+            top: 9mm;
+        }
+
+        .nameContainer p {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .nameContainer p.nameContainerName {
+			  margin-bottom: 16pt;
+        }
+	  
+	  	 span.firstname {
+            font-family: "Ubuntu Medium";	  
+            font-size: 26pt;	  
+		  }
+	  
+	  	 span.lastname {
+            font-family: "Ubuntu Light";	  
+            font-size: 16pt;	  
+		  }	  
+
+        .nameContainer p.nameContainerCompany {
+            font-family: "Ubuntu Medium";
+            font-size: 16pt;
+        }
+	  
+        .nameContainer p.nameContainerRole {
+            font-family: "Ubuntu Light";
+            font-size: 16pt;
+        }	  
+
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<div class="nameContainer">
+    <p class="nameContainerName">
+	  <span class="firstname">{{ pass.person.firstname }}</span><br>
+	  <span class="lastname">{{ pass.person.lastname }}</span>
+	</p>
+    <p class="nameContainerRole">{{ pass.person.role }}</p>  
+	<p class="nameContainerCompany">{{ pass.person.company }}</p>
+</div>
+</body>
+</html>

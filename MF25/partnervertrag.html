@@ -1,0 +1,355 @@
+<style>        
+    .right{margin-left:auto;margin-bottom:8px;float:right}
+    .clear::after{content:"";display:block;clear:both}
+    .text-center{text-align:center}
+    .text-right{text-align:right}
+    .top-address{margin-top:15px}
+    .introduction{margin-top:30px;margin-bottom:30px}
+    .offer-intro{border:1px solid #2a2b2b;padding:4px 8px;margin-bottom:20px}
+    .title{font-size:14pt;margin-bottom:30px}
+    .bold,.title,b,strong{font-weight:700;font-style:normal}
+    .terms,.text-smallest{font-size:9pt}
+    table.layouttable{width:100%}
+    table.offer-table{width:100%;border:1px solid #000;border-collapse:collapse;font-size:10pt;margin-bottom:20px}
+    .offer-table td,th{padding:6px 4px;border:1px solid #bbb;border-collapse:collapse}
+    th{font-weight:700;background-color:#f0f0f0;text-align:left}
+    .head-contacts{margin-top:60px;color:#ccc}
+    .head-name{margin-bottom:12px}
+    .inline-block span{display:inline-block;margin-bottom:6px}
+    .inline-block span:first-child{text-transform:uppercase;width:100px}  
+</style>
+
+<div class="right clear">{{ contract.created_at|date("d.n.Y") }}</div>
+<div class="top-address">
+    {{ application.name }}<br>
+    {{ partner.firstname }} {{ partner.name }}<br>
+    {{ application.address }}<br><br>
+    {{ application.zip }} {{ application.city }}
+</div>
+
+<div>
+    <div class="introduction">
+        {{ application.introduction|raw }}
+    </div>
+    <table class="layouttable">
+        <tbody>
+            <tr>
+                <td style="width:50%;">
+                    <img src="https://macherfestival.festiwa.re/redactor-image/f0ae3c6b-fcbb-413f-8603-403ee5414141.png" alt="Daniel Michailidis" style="margin-bottom: 20px; width: 165px"><br>
+                    <b>Daniel Michailidis</b><br>
+                    Geschäftsführer
+                </td>
+                <td style="width:50%;">
+                    <img src="https://macherfestival.festiwa.re/redactor-image/9b054015-601b-47b6-9446-0e1e0cb23b42.png" alt="Bernadette Feil" style="margin-bottom: 20px; width: 145px"><br>
+                    <b>Bernadette Feil</b><br>
+                    Head of Partner
+                </td>
+            </tr>           
+        </tbody>
+    </table>
+</div>
+
+<div style="page-break-before: always;"></div>
+
+{% set positionSettings = [
+    {
+        "flaeche_200": {
+            "name" : "Fläche bis 200 m<sup>2</sup>",
+            "description" : "Standfläche bis 200 m<sup>2</sup> / " ~ application.price_flaeche_200 ~ " € pro m<sup>2</sup>",
+            "price" : 90
+        },
+        "flaeche_300": {
+            "name" : "Fläche ab 200 m<sup>2</sup>",
+            "description" : "Zusätzliche Fläche ab 200 m<sup>2</sup> / " ~ application.price_flaeche_300 ~ " € pro m<sup>2</sup>",
+            "price" : 45
+        }
+    },
+    {
+        "standbau_200": {
+            "name" : "Standbau 200",
+            "description" : "Layher Gerüst / " ~ application.price_standbau_200 ~ " €",
+            "price" : 6000
+        },
+        "standbau_300": {
+            "name" : "Standbau 300",
+            "description" : "Erweiterter Standbau / " ~ application.price_standbau_300 ~ " €",
+            "price" : 9000
+        },
+        "open_side_container_open": {
+            "name" : "Open Side Container Open",
+            "description" : "Ausgabe und Lagerung",
+            "price" : 2500
+        },
+        "open_side_container_closed": {
+            "name" : "Open Side Container Closed",
+            "description" : "Geschlossener Container für Ausgabe und Lagerung",
+            "price" : 2500
+        },
+        "Lagercontainer_abschliessbar": {
+            "name" : "Lagercontainer abschliessbar",
+            "description" : "Überseecontainer, Farbe kann noch angegeben werden",
+            "price" : 1500
+        },
+        "banner_and_verkleidung": {
+            "name" : "Banner und Verkleidung",
+            "description" : "Gaze B1 Verkleidung und Bannerdesign mit eurem Logo",
+            "price" : 2000
+        },
+        "uberdachung": {
+            "name" : "Überdachung",
+            "description" : "100 m<sup>2</sup> Trapezblech - 10x10 m",
+            "price" : 2500
+        },
+        "loungeecke": {
+            "name" : "Loungeecke",
+            "description" : "Loungemöbel",
+            "price" : 450
+        },
+        "welcome_desk": {
+            "name" : "Welcome Desk",
+            "description" : "L-Form min. 6 m Länge",
+            "price" : 350
+        },
+        "stromanschluss": {
+            "name" : "Stromanschluss",
+            "description" : "CEE, 400 V, 32 A, max. 15 kW",
+            "price" : 500
+        },
+        "mullpauschale": {
+            "name" : "Müllpauschale",
+            "description" : "",
+            "price" : 500
+        },
+        "werbetower": {
+            "name" : "Werbetower",
+            "description" : "2 m x 2 m x 4 m Layher Turm",
+            "price" : 600
+        },
+        "sonnensegel": {
+            "name" : "Sonnensegel",
+            "description" : "Sonnensegel für die Lounge",
+            "price" : 400
+        },
+        "werkbank": {
+            "name" : "Werkbank",
+            "description" : "Arbeitsplatz / Werkbank",
+            "price" : 70
+        }
+    },
+    {
+        "festival_tickets": {
+            "name" : "Festival Tickets",
+            "description" : "im Wert von je 149,99 €",
+            "price" : null
+        },
+        "parktickets_infield": {
+            "name" : "Parktickets Infield",
+            "description" : "im Wert von je 250,00 €",
+            "price" : null
+        },
+        "zugang_backstage": {
+            "name" : "Zugang Backstage",
+            "description" : "im Wert von je 330,00 €",
+            "price" : null
+        },
+        "einbindung_webseite": {
+            "name" : "Einbindung Webseite",
+            "description" : "Banner und Workshop Vorstellung",
+            "price" : 1000
+        }
+    },
+    {
+        "Hotel_Doppelzimmer_Einzel": {
+            "name": "Hotel Doppelzimmer Einzel",
+            "description": "Hotelübernachtung Doppelzimmer, Einzelbelegung; Hotel Elbebrücke (pro Nacht inkl Frühstück) 1 Person",
+            "price": 103
+        },
+        "Hotel_Doppelzimmer_Doppel": {
+            "name": "Hotel Doppelzimmer Doppel",
+            "description": "Hotelübernachtung Doppelzimmer, Doppelbelegung; Hotel Elbebrücke (pro Nacht inkl Frühstück) 2 Personen",
+            "price": 138
+        },
+        "PartnerCamping_2Person": {
+            "name": "Partner Camping, High class Zelt (2 Personen)",
+            "description": "Gesamtes Zelt für zwei Personen für eine Woche",
+            "price": 555
+        },
+        "PartnerCamping_6Person": {
+            "name": "Partner Camping, High class Zelt (6 Personen)",
+            "description": "Gesamtes Zelt für sechs Personen für eine Woche",
+            "price": 680
+        }
+    },
+    {
+        "Partner_Breakfast": {
+            "name": "Frühstück in der Partner Camping Area",
+            "description": "Buffet",
+            "price": 9
+        },
+        "Partner_Mittag": {
+            "name": "Mittagessen in der Partner Lounge",
+            "description": "Buffet",
+            "price": 9
+        },
+        "Partner_Abend": {
+            "name": "Abendessen in der Partner Lounge",
+            "description": "Buffet",
+            "price": 9
+        },
+        "Food_Voucher": {
+            "name": "Food Voucher",
+            "description": "Mittag-/Abendessen Foodstände Voucher",
+            "price": 9
+        }
+    }
+] %}
+
+{% set totalSum = 0 %}
+
+<div class="offer-intro">
+    <b>Angebot für die Teilnahme auf dem Macher Festival 25<br>
+    Standfläche, Standbau, Extras, Tickets und Hospitality</b>
+</div>
+{% set headerAdded = false %}
+{% if positionSettings|length %}
+    {% for groupedItems in positionSettings %}
+         <table class="offer-table">   
+                {% if headerAdded == false %}
+                    {% set headerAdded = true %}
+                    <thead>
+                        <tr>
+                            <th style="width: 25%">Posten</th>
+                            <th style="width: 34%">Beschreibung</th>
+                            <th class="text-right" style="width: 9%">Anzahl</th>
+                            <th class="text-right" style="width: 16%">Einzelpreis</th>
+                            <th class="text-right" style="width: 16%">Gesamt</th>
+                        </tr>
+                    </thead>
+                {% endif %}
+                <tbody>
+                    {% for key, item in groupedItems %}
+                        {% set qty = application[key]|default(0)|force_to_int %}
+                        {% if qty > 0 %}
+                            {% if key == 'einbindung_webseite' %}
+                                {% set unitPrice = application.price_einbindung_webseite|default(item.price)|force_to_int %}
+                            {% elseif key in ['flaeche_200', 'flaeche_300', 'standbau_200', 'standbau_300'] %}
+                                {% set unitPrice = attribute(application, 'price_' ~ key)|default(item.price)|force_to_int %}
+                            {% else %}
+                                {% set unitPrice = item.price|force_to_int %}
+                            {% endif %}
+                            
+                            {% set total = qty * unitPrice %}
+                            {% set totalSum = totalSum + total %}
+                            <tr>
+                                <td style="width: 25%">{{ item.name|raw }}</td>
+                                <td style="width: 34%">{{ item.description|raw }}</td>
+                                <td class="text-right" style="width: 9%">{{ qty }}</td>
+                                <td class="text-right" style="width: 16%">
+                                    {{ unitPrice is not null ? unitPrice|number_format(2, ',', '.') ~ ' €' : '-' }}
+                                </td>
+                                <td class="text-right" style="width: 16%">
+                                    {{ total is not null ? total|number_format(2, ',', '.') ~ ' €' : '-' }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+         </table>
+    {% endfor %}
+
+    {% set totalWithTax = totalSum + totalSum * 0.19 %}
+    {% if totalSum > 0 %}
+        <table class="offer-table break-avoid">
+            <thead>
+                <tr>
+                    <th>Gesamtkosten</th>
+                    <th class="text-right" style="width: 16%">{{ totalSum|number_format(2, ',', '.') ~ ' €' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Zzgl. 19% USt</td>
+                    <td class="text-right text-smallest" style="width: 16%">{{ totalWithTax|number_format(2, ',', '.') ~ ' €' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endif %}
+
+<div style="display:none">
+    {{ application.flaeche_200 }}
+    {{ application.price_flaeche_200 }}
+    {{ application.flaeche_300 }}
+    {{ application.price_flaeche_300 }}
+    {{ application.standbau_200 }}
+    {{ application.price_standbau_200 }}
+    {{ application.standbau_300 }}
+    {{ application.price_standbau_300 }}
+    {{ application.open_side_container_open }}
+    {{ application.open_side_container_closed }}
+    {{ application.Lagercontainer_abschliessbar }}
+    {{ application.banner_and_verkleidung }}
+    {{ application.uberdachung }}
+    {{ application.loungeecke }}
+    {{ application.welcome_desk }}
+    {{ application.stromanschluss }}
+    {{ application.mullpauschale }}
+    {{ application.werbetower }}
+    {{ application.sonnensegel }}
+    {{ application.festival_tickets }}
+    {{ application.parktickets_infield }}
+    {{ application.zugang_backstage }}
+    {{ application.einbindung_webseite }}
+    {{ application.price_einbindung_webseite }}
+    {{ application.werkbank }}
+    {{ application.Hotel_Doppelzimmer_Einzel }}
+    {{ application.Hotel_Doppelzimmer_Doppel }}
+    {{ application.PartnerCamping_2Person }}
+    {{ application.PartnerCamping_6Person }}
+    {{ application.Partner_Breakfast }}
+    {{ application.Partner_Mittag }}
+    {{ application.Partner_Abend }}
+    {{ application.Food_Voucher }}
+</div>
+
+<div style="page-break-before: always;"></div>
+
+<p class="title">Allgemeine Geschäftsbedingungen für Partner des Macher Festivals 2025</p>
+
+<div class="terms">
+    <p class="break-avoid"><br><strong>1. Vertragsschluss</strong></p>
+    <p class="break-avoid">1.1. Allgemein</p>
+    <p>Dem zwischen Aussteller und Veranstalter, der Macherfestival GmbH, geschlossenen Mietvertrag über den Ausstellungsstand liegen die nachstehenden Allgemeinen Geschäftsbedingungen des Veranstalters zugrunde. Es gelten ausschließlich diese Allgemeinen Geschäftsbedingungen sowie vor Ort auch die Hausordnung des Geländebetreibers.</p>
+    <p class="break-avoid">1.2. Zustandekommen des Mietvertrags</p>
+    <p>Nach schriftlicher oder mündlicher Absprache lässt der Veranstalter Macherfestival GmbH dem Aussteller ein Angebot über die zu beziehende Standfläche, den Standbau und sonstige Zusatzleistungen zukommen. Die örtlich zugeteilte Standfläche ist hier noch nicht festgelegt. Bei beidseitiger Zustimmung und Unterschrift des Angebots kommt der Mietvertrag zustande.</p>
+    <p class="break-avoid">1.3. Standzuweisung</p>
+    <p>Die Bereitstellung der Stände erfolgt unter ausstellungstechnischen Gesichtspunkten. Der Aussteller hat unabhängig von vorherigen Platzierungsvorschlägen und -wünschen keinen Anspruch auf eine bestimmte Lage, es sei denn es ist mietvertraglich etwas anderes vereinbart. Der Veranstalter wird bei der Flächeneinteilung nach Möglichkeit den Wünschen des Ausstellers entsprechen.</p>
+    <p class="break-avoid">1.4. Zahlungsziel</p>
+    <p>Der Rechnungsbetrag ist spätestens zwei Wochen vor Beginn der Veranstaltung in voller Höhe ohne Abzug zu zahlen. Rechnungen, die zwei Wochen vor Beginn der Veranstaltung oder später ausgestellt werden, sind sofort zu zahlen. Für die Rechtzeitigkeit der Zahlung kommt es auf den Eingang des Geldes auf dem Konto des Veranstalters an. Die fristgerechte Zahlung der Standmiete ist Voraussetzung für den Bezug der Standfläche.</p>
+    <p class="break-avoid"><strong>2. Hausordnung des Geländes</strong></p>
+    <p>Das Ferropolis Gelände ist ein Privatgelände. Verwaltet wird dies durch Ferropolis Stiftung, Industriekultur gGmbH, Ferropolisstrasse 1, 06773 Gräfenhainichen. Diese übt neben dem Veranstalter Macherfestival GmbH das Hausrecht aus. Dieses Hausrecht beziehungsweise die Sicherheitsbestimmungen gelten für alle Personen, die das Gelände begehen oder befahren. Diese Bestimmungen können auf der Website ferropolis.de von jedermann eingesehen werden.</p>
+    <p class="break-avoid"><strong>3. Öffnungszeiten</strong></p>
+    <p class="break-avoid">3.1. Aufbau</p>
+    <p>Auf dem Gelände kann von 4. bis 6. August von 8 bis 20 Uhr und am 7. August von 8 bis 14 Uhr aufgebaut werden. Andere Zeiten müssen bei dem Veranstalter Macher Festival GmbH angefragt und schriftlich genehmigt werden. Der konstruktive Standbau muss am 7. August um 14 Uhr abgeschlossen und angrenzende Flächen freigeräumt sein.</p>
+    <p class="break-avoid">3.2. Abbau</p>
+    <p>Mit dem Abbau kann am 10. August um 12 Uhr begonnen werden. Erst dann dürfen Fahrzeuge, die dem Abbau dienen, das Gelände befahren. Am 10. August endet der Abbau um 22 Uhr. Am 11. August kann von 8 bis 20 Uhr abgebaut werden. Die Macher Festival GmbH behält sich vor alle Aufbauten und Materialien von Ausstellern, die bis zum 11. August um 20 Uhr noch nicht entfernt wurden, auf Kosten und Gefahr des Ausstellers abtransportieren und einlagern zu lassen oder entsorgen zu lassen.</p>
+    <p class="break-avoid">3.3. Veranstaltungslaufzeit</p>
+    <p>Das Macherfestival beginnt am 7. August um 18 Uhr und endet am 10. August um 10 Uhr. Jeweils nachts von 24 Uhr bis 8 Uhr ist das Gelände für Teilnehmer und Aussteller geschlossen.</p>
+    <p class="break-avoid"><strong>4. Verkehr, Rettungswege</strong></p>
+    <p class="break-avoid">4.1. Verkehr</p>
+    <p>Das Befahren des Geländes während der Veranstaltung ist nur auf eigene Gefahr und mit entsprechender Fahrerlaubnis beziehungsweise Parkticket erlaubt. Die Fahr- oder Parkerlaubnis ist gut sichtbar hinter der Windschutzscheibe des entsprechenden Fahrzeuges anzubringen. Die Erlaubnis gilt nur für das Fahrzeug für das sie ausgestellt wurde.</p>
+    <p class="break-avoid">4.2. Rettungswege</p>
+    <p>Die gekennzeichneten Feuerwehrbewegungszonen und Rettungswege und Sicherheitszonen müssen ständig freigehalten werden und dürfen - auch während des Auf- und Abbaus - nicht durch parkende Fahrzeuge oder sonstige abgestellte Materialien der Aussteller belegt werden. Sämtliche in den Plänen festgelegte Gänge oder Ausgänge sind in voller Breite freizuhalten.</p>
+    <p class="break-avoid"><strong>5. Sicherheit und Haftung</strong></p>
+    <p>Der Veranstalter Macherfestival GmbH beziehungsweise der von ihm festgelegte Sicherheitsdienst sorgt für Securitypräsenz auf dem Gelände. Der Veranstalter übernimmt keine Gewähr für eine lückenlose Bewachung des Geländes. Die Bewachung des Standes und des Ausstellerguts ist nicht Aufgabe des Veranstalters. Der Veranstalter haftet nicht für Schäden an und Verlust von Messegütern und Standeinrichtungen des Ausstellers. Der Veranstalter haftet ferner nicht für Schäden materieller oder ideeller Art, die durch die Nutzung der Ausstellungsfläche seitens des Ausstellers entstehen, sofern kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden des Veranstalters vorliegt.</p>
+    <p class="break-avoid"><strong>6. Standgestaltung</strong></p>
+    <p>Der Aussteller sorgt dafür, dass das Erscheinungsbild des Standes entsprechend der Veranstaltung Macher Festival rustikal, handwerklich, baustellenähnlich bleibt und nicht zu sehr verändert wird. Der Veranstalter behält sich vor, auf Verstöße hinzuweisen und Veränderungen einzufordern.</p>
+    <p class="break-avoid"><strong>7. Werben außerhalb der Standfläche</strong></p>
+    <p>Es ist dem Aussteller nicht gestattet, außerhalb seiner Standfläche durch Werbeträger auf sich aufmerksam zu machen. Das Verteilen von Flyern, Aufstellen von Werbebannern oder PopUps oder ähnliches auf dem Gelände ist nicht erlaubt. Der Aussteller kann dafür eine schriftliche Genehmigung erfragen.</p>
+    <p class="break-avoid"><strong>8. Betriebssicherheit</strong></p>
+    <p>Der Aussteller ist für die Betriebssicherheit und die Einhaltung der Arbeitsschutz- und Unfallverhütungsvorschriften auf dem gesamten Stand verantwortlich.</p>
+    <p class="break-avoid"><strong>9. Präsenzpflicht</strong></p>
+    <p>Der Aussteller hat während der Workshop Öffnungszeiten, welche da sind am Freitag von 10 bis 18 Uhr und am Samstag von 10 bis 18 Uhr, an seinem Stand anwesend zu sein. Dem Aussteller ist ein Abbau des Standes vor Beginn der offiziellen Abbauzeit (siehe Punkt Abbau) nicht gestattet.</p>
+    <p class="break-avoid"><strong>10. Widerruf</strong></p>
+    <p>Der Veranstalter kann die dem Aussteller bereits erteilte Zulassung zur Teilnahme an der Messeveranstaltung widerrufen, wenn sich die Voraussetzungen für die Zulassung geändert haben oder Aussteller die sich aus diesen Allgemeinen Geschäftsbedingungen ergebenden Verpflichtungen nicht einhält. Dies betrifft insbesondere falsche Angaben des Ausstellers über Exponate, Untervermietung oder Weitergabe der Ausstellungsfläche an Dritte ohne vorherige Zustimmung des Veranstalters, verspäteter Aufbau des Ausstellungsstandes oder Zahlungsverzug.</p>
+</div>
