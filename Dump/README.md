@@ -22,6 +22,8 @@ _Create a site or blog from your GitHub repositories with GitHub Pages._
 
 ## Step 2: Configure your site
 
+Schnitzel!
+
 _You turned on GitHub Pages! :tada:_
 
 We'll work in a branch, `my-pages`, that I created for you to get this site looking great. :sparkle:
